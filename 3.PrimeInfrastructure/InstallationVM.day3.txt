@@ -1,0 +1,90 @@
+SIEMPRE UTILIZAR THICK EN "DISK PROVISIONING"
+
+MD5 se revisa siempre, tambien para las descargas:
+	Check MD5
+		Windows: CertUtil -hashfile <filename> MD5
+		Linux: ade # md5sum <backupname>
+(CIMC)
+
+	Activar Prime en Physical appliance: Activamos virtual devices en (Virtual Media)utilizando (CD/DVD)(MapDrive).
+___________________________________________________________________
+VIDEO CIMC CONFIGURATION: https://www.youtube.com/watch?v=KHQBvwO7pUU
+	*Enter configuration CIMC config with (f8)
+___________________________________________________________________
+APPLIANCE SE MANEJA DESDE EL CIMC
+ANTES DE INTENTAR EL UPGRADE EN UN REMOTE SERVER!:
+	#df -h ("para ver si las particiones tienen el espacio requerido")
+	#ncs status ("para ver los servicios que estan en running")
+		No debe estar en primary active el health monitor server("debe estar en HA not configured")
+	#ncs stop ("para detener los servicios")
+	#ncs start ("para iniciarlos")
+	#application upgrade-3.0.X_to_3.1.0.0.xxx.tar.gz defaultRepo
+NCS = Network Convergence Sys
+HA = HIGH AVAILABILITY
+PI = PRIME INFRASTRUCTUR
+SE CORRE DESDE LA CONSOLA DEL SERVER
+*Upgrade Overwiew: Para nuevas compatibilidad, arreglar bugs, problemas de vulnerabilidad
+	INLINE UPGRADE: Tomar el server existente y cambiarlo por 	una version mas alta.
+	The other method is by reinstalling Prime and restoring backup.
+		PI3.1.7-PI3.2-PI3.3-PI3.4-PI3.5-PI3.6
+-------------------------------------------------------------------
+Edit Settings - CO - Prime (ESXi6.7)
+primario y secundario deben tener la misma version
+-------------------------------------------------------------------
+-PATCH INSTALLATION CONTD.- Logg en prime, Administration/Licenses and Software Updates/Software Update, download, upload, INSTALL
+
++Instalar el Pack 2 para estar al día (DEVICE PACK2)
++Soporta los indicados, no todos los devices Cisco.
++Pack terminan en (.ubf)
+	
+	To ACCESS software update page on a SECUNDAY SERVER use:
+		IP + PORT: 8087(8082)
+-------------------------------------------------------------------
+-SNAPSHOT OF A VIRTUAL MACHINE-
+Proccess: Snapshot - https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.vm_admin.doc/GUID-9720B104-9875-4C2C-A878-F1C351A4F3D8.html  
+
+https://www.cisco.com/c/en/us/support/cloud-systems-management/prime-infrastructure/products-device-support-tables-list.html
+___________________________________________________________________
+BACKUP TYPES
+-(APP)Application Backups: Cuando vas a cambiar de version de PI
+	#backup <backup-name> repository <repo-name> application NCS
+-(SYS)Appliance Backups: Cuando se hace un backup en la misma version
+	#backup <backup-name> repository <repo-name>
+*BACKUP SCHEDULING: 
+
+TWO TYPES OF REPOSITORY: FTP, SFTP, NFS
+*REMOTE REPOSITORIES:
+*CONFIGURING FTP REPOSITORIES: Adding an FTP Repository
+				1.Open a CLI session
+				2.Enter Configuration Mode
+					#configure terminal
+				3.#repository labtest
+				  #url ftp://10.225.137.150/
+				  #user admin password plain Labtest$
+				  #end
+				4.Add an NFSStaging directory
+					#backup-staging-url nfs://RemoteServerIP:/dir/path
+
+NOTE!:THE DIRECTORIES OF THE REPOSITORY LOCATION & STAGING LOCATION CAN NOT BE THE SAME!
+--------------------------------------------------------------------------------
+CARPETA DONDE SE ENCUENTRAN LOS LOGGS:
+	/opt/CSCOlumos/logs/dbadmin.StdOut.log
+________________________________________________________________________________
+TROUBLESHOOTING BACKUP ISSUES:
+	CHECK THE BACKUP HISTORY:
+		#show backup history
+	CHECK FOR AVAILABLE SPACE IN LOCALDISK:
+		#df -h
+	CHECK FOR AVAILABLE SPACE IN REMOTE REPOSITORY
+	CHECK FOR CONNECTIVITY TO REMOTE REPOSITORY
+		#show repository <remote-repo-name>
+	FOR (S)FTP repositories attempt to copy a different file from shell:
+		#cd /localdisk/defaultRepo
+		#ftp <ftp-server-ip>
+		#ftp>binary
+		#ftp>put <file-name>	
+
+___________________________________________________________________
+	Cisco Prime Infrastructure 3.7 Appliance:https://www.cisco.com/c/en/us/td/docs/net_mgmt/prime/infrastructure/3-7/quickstart/guide/bk_Cisco_Prime_Infrastructure_3_7_0_Quick_Start_Guide.html
+
+https://www.cisco.com/c/en/us/td/docs/net_mgmt/prime/infrastructure/3-7/admin/guide/bk_CiscoPrimeInfrastructure_3_7_AdminGuide/bk_CiscoPrimeInfrastructure_3_7_AdminGuide_chapter_010.html
