@@ -52,7 +52,7 @@ BACKUP TYPES
 	#backup <backup-name> repository <repo-name>
 *BACKUP SCHEDULING: 
 
-TWO TYPES OF REPOSITORY: FTP, SFTP, NFS
+TREE TYPES OF REPOSITORY: FTP, SFTP, NFS
 *REMOTE REPOSITORIES:
 *CONFIGURING FTP REPOSITORIES: Adding an FTP Repository
 				1.Open a CLI session
@@ -83,7 +83,24 @@ TROUBLESHOOTING BACKUP ISSUES:
 		#ftp <ftp-server-ip>
 		#ftp>binary
 		#ftp>put <file-name>	
+___________________________________________________________________
+-RESTORING BACKUPS-
+	RESTORING AN APPLICATION BACKUP:
+		#ncs run reset db ("Para reiniciar los settings, pero guardando fuera los backups")
+		#restore <backup-file-name> repository <repo-name> application NCS
+	RESTORING AN APPLIANCE BACKUP:
+		#restore <backup-file-name> repository <repo-name>
+___________________________________________________________________
+-TROUBLESHOOTING RESTORE ISSUES-
+Common Errors:
+	"ERROR: Unpacking backup file failed. Invalid backup file. Please retry restore with another backup."
+	"ERROR: Not enough space to unpack the backup file or the backup file you are trying to restore is not valid."
 
+Possible Cause:
+	The backup file might not have transferred completely or the was transferred in "ASCII" mode instead of "binary mode".
+Possible Fix:
+	Linux: md5sum<file_name>
+	Windows:cerUtil -hashfile C:\<file_name> MD5
 ___________________________________________________________________
 	Cisco Prime Infrastructure 3.7 Appliance:https://www.cisco.com/c/en/us/td/docs/net_mgmt/prime/infrastructure/3-7/quickstart/guide/bk_Cisco_Prime_Infrastructure_3_7_0_Quick_Start_Guide.html
 
