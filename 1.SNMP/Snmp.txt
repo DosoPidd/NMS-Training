@@ -1,0 +1,243 @@
+*******************
+
+DAY 1 SNMP Training
+
+*******************
+
+ 
+
+SNMP: Simple Network Management Protocol.
+
+Ports:161 for polling, 162 Traps.
+
+SNMP Manager > MIB < SNMP Agent
+
+ 
+
+SNMP Tools:
+
+ 
+
+MIB LOCATOR:
+
+https://cfnng.cisco.com/mibs
+
+ 
+
+SNMP Object Navigator:
+
+https://snmp.cloudapps.cisco.com/Support/SNMP/do/BrowseOID.do?local=en
+
+ 
+
+SNMP Translate & Search Marcus:
+
+https://www.marcuscom.com/snmptrans/
+
+ 
+
+=========================================================
+
+SNMPv2c Configuration Example
+
+ 
+
+Rules for config or best practice:
+
+ 
+
+1. Create ACL
+
+2. Create SNMP View.
+
+3. Create SNMP string and merge with view and acl.
+
+ 
+
+Create ACL Standard:
+
+access-list 10 permit host 10.1.1.254
+
+ 
+
+Create SNMP View: (optional)
+
+snmp-server view <name> iso included
+
+snmp-server view <name> <specific MIB> excluded
+
+ 
+
+Create community string:
+
+With view: snmp-server community <string> [VIEW] [RO | RW] [ACL]
+
+Without view: snmp-server community <string> [RO | RW] [ACL]
+
+ 
+
+Example:
+
+access-list 10 permit host 10.1.1.254
+
+snmp-server view noFlash iso included
+
+snmp-server view noFlash 1.3.6.1.4.1.9.9.10 excluded
+
+snmp-server community esterodr view noFlash RO 10
+
+=========================================================
+
+ 
+
+==================================================================================================================
+
+SNMPv3 Configuration Example
+
+ 
+
+Rules for config or best practice:
+
+ 
+
+1. Create ACL
+
+2. Create SNMP View.
+
+3. Create SNMPv3 Group, User and Context.
+
+ 
+
+Create ACL Standard:
+
+access-list 10 permit host 10.1.1.254
+
+ 
+
+Create SNMP View: (optional)
+
+snmp-server view NMS iso included
+
+snmp-server view NMS <specific MIB> excluded
+
+ 
+
+SNMPv3 with AuthNoPriv Example:
+
+snmp-server group <gname> v3 auth read NMS [access ACL]
+
+snmp-server user <uname> <gname> v3 auth [MD5 | SHA] <authpassword>
+
+snmp-server group <gname> v3 auth context vlan- match prefix
+
+ 
+
+Example AuthNoPriv:
+
+snmp-server group Training v3 auth read NMS access 10
+
+snmp-server user Cisco Training v3 auth SHA T4cp45s123!
+
+snmp-server group Training v3 auth context vlan- match prefix
+
+ 
+
+SNMPv3 with AuthPriv Example:
+
+snmp-server group <gname> v3 priv read vname write vname [access ACL]
+
+snmp-server user <uname> <gname> v3 auth [MD5 | SHA] <authpassword> priv aes 128 <privpassword>
+
+snmp-server group <gname> v3 priv context vlan- match prefix
+
+ 
+
+Example AuthPriv:
+
+snmp-server group Training v3 priv read NMS write NMS access 10
+
+snmp-server user Newbie Training v3 auth SHA T4cp45s123! priv aes 128 T4cp45s123!
+
+snmp-server group Training v3 priv context vlan- match prefix
+
+ 
+
+Notes:
+
+auth in the SNMPv3 group means the Security Level used, which is AuthNoPriv.
+
+auth in the SNMPv3 user means the authentication protocol to be used, it can be MD5 or SHA.
+
+priv in the SNMPv3 group indicated the Security Level used, which is AuthPriv.
+
+==================================================================================================================
+
+ 
+
+SNMP Context.
+
+Used to get the L2 information from device, in other words, the MAC Addresses of the end-hosts connected to the VLAN-ID.
+
+Commonly for this we use the BRIDGE-MIB = dot1dBridge = 1.3.6.1.2.1.17
+
+ 
+
+SNMPv2c:
+
+Indexing happens adding the string@vlanid, example: Cisco@10, in the SNMPv2c query, NMS Tools does this alone.
+
+Commonly polled the object dot1dTpFdbAddress = 1.3.6.1.2.1.17.4.3.1.1
+
+Device must provide output for "show snmp context" to use SNMPv2c indexing.
+
+Other OIDs used:
+
+vtpVlanName = 1.3.6.1.4.1.9.9.46.1.3.1.1.4
+
+vtpVlanState = 1.3.6.1.4.1.9.9.46.1.3.1.1.2
+
+dot1dTpFdbStatus = 1.3.6.1.2.1.17.4.3.1.3
+
+ 
+
+SNMPv3, uses the concept of "vlan- match prefix", example: -n vlan-10, in the SNMPv3 query, NMS Tools does this alone.
+
+snmp-server group <gname> v3 [auth|priv] context vlan- match prefix
+
+snmpwalk -v3 -n "vlan-#" -u <username>...
+
+ 
+
+SNMP Traps config:
+
+snmp-server enable traps > Global commands that enables all traps by default.
+
+snmp-server enable traps [notification-type] [notification-option] > Command to enable specific traps.
+
+snmp-server host <ip/hostname> [traps | informs] [version {2c | 3}] [community-string | v3user] > enable all traps to be sent to NMS tool.
+
+snmp-server host <ip/hostname> [traps | informs] [version {2c | 3}] [community-string | v3user] [notification-type] > Only specific traps sent
+
+to the NMS Tool.
+
+snmp-server trap-source <mgmt-int>
+
+ 
+
+=========================
+
+Troubleshooting commands:
+
+ 
+
+show run | sec snmp-server
+
+show snmp
+
+show snmp engineID
+
+show snmp group
+
+show snmp user
+
+show snmp context

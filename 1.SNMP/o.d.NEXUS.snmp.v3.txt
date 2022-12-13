@@ -1,0 +1,26 @@
+SNMP V3 | NEXUS
+______________________
+VERIFICAR LOS USUARIOS DE V3
+#show snmp user
+**********************
+CONFIGURAR USUARIO CON Auth
+#snmp-server user TAC auth sha Tacpass123! --------->"Contraseña"
+AGREGAR A GRUPO ACCES LIST
+#snmp-server user TAC use-ipv4acl CO-SNMP
+************************
+Creacion de usuario:
+	#snmp-server globalEnforcePriv
+	#snmp-server user Ivan network-admin auth md5 IvanTAC123! 		priv aes-128 IvanTAC123!
+	#snm-server user Melissa auth md5 MelissaTac123!
+	#snm-server user Melissa auth sha PedroTac123!
+	
+Creacion de usuario con globalEnforcePriv:
+	#snmp-server user Melida network-admin auth sha 			MelidaTAC123! priv aes-128 MelidaTAC123!
+************************
+
+
+	
+ROOT@ADMIN________________________
+#snmpwalk -v3 -1 authNoPriv -u sha -A Tacpass123! 10.82.141.214 1
+
+mibs contienen a los oids

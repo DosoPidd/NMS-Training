@@ -1,0 +1,133 @@
+Ip SLA: Sla has two entities
+	I. Sender (Source):
+		Source and Sender are used interchangeably.
+	       +SLA sender generates active measurement traffic based on operation type.
+	       +SLA sender reports measurement metrics such as rtt, connectivity, network delay, jitter etc.
+               +SLA sender can detect threshold violation and send notification.
+	       +SLA defined Packet Size, Spacing and Protocol.
+	       +Operation configuration takes place on the sender only.
+	       +Once the operation is finished, all the results are to be polled off the sender.
+	       +Target is another host (Host or Sla Responder).
+	       +Some operations require the target to run the SLA responder (Jitter for instance), some other are working with a simple Host (ICMP Echo for instance).
+
+
+       II. Responder (Destination): 
+		Destination and Responder are used 				interchangeably.
+		-Sender uses the SLA Control Protocol to communicate with responder before sending the test packets.
+		-Responder knows the type of operation.
+		-Communication can be authenticated with MD5, not encrypted (offers integrify).
+		-Responder inserts in/out timestamps in packet payload (measures CPU time spent)
+		-Manage concurrent jitter sessions.
+		-Opem permanent UDP/TCP port as required
+		-Register to hub as configured
+		-Monitor the connection to hub, re-register if broken.
+
+
+ 		 __________________________________________
+		| MEASUREMENT METRICS                      |
+		|------------------------------------------|		   	| Latency, Packet Loss, Network Jitter     | 
+		| History, Connectivity.                   |
+		|__________________________________________|
+		| OPERATIONS				   |
+		|------------------------------------------|
+		| HTTP, FTP, TCP, PathEcho, ICMP Echo      |
+		| UDP Echo, UDP Jitter, Ethernet, RTP      |
+		| Video, others...			   |
+		|__________________________________________|
+                                           
+____________________________________________________________
+COVERAGE OF TEST
+------------------------------------------------------------
+*This is the proportion of time during which the network is under test.
+*A small coverage of test means a small probability of catching an event.
+	Example:
+		Running a test for 20 seconds every 60 seconds(FREQUENCY) is equivalent to a 33% coverage of test.
+____________________________________________________________
+FREQUENCY
+------------------------------------------------------------
+*The operation frequency, as well as operation duration, have a direct impact on the COVERAGE.
+*The frequency parameter is expressed in second, and is the amount of time between two instances of a running operation will be restarted.
+*FREQUENCY DEFAULT ES DE 60sec
+debe ser menor o igual a 60sec
+Minimo 5sec - Max 60sec
+____________________________________________________________
+____________________________________________________________
+----------------------Start the SLA Operation--------------
++ Scheduling:
+	Se puede usar por grupos, random o 1 por 1: se recomienda el 1 por 1.
+		#ip sla sched 1 start-time now life 22
++ Multi-operation scheduling (groups)
++ Randomized start-time
+____________________________________________________________
+REACTION CONFIGURATION
+*Rising and falling thresholds
+*Robust threshold definition for SLAs
+*SNMP traps and Syslog messages generated when SLA violated
+*Thresholds can trigger SLA operation activation for further analysis.
+-----------------------------------------------------------
+	I.What is Reaction in IP SLA?
+		+IP SLAs can be configured to react to certain measured network conditions. If IP SLA measures too much or too low of any configured reaction, IP SLAs can generate a notification to a network managment application, or trigger another IP SLA operation to gather more data. SNMP notification and Syslog messages can be sent.
+			#ip sla reaction-configuration 3 react packetLossDS threshold-value 3 2 threshold-type immediate action-type trapOnly
+
+	CONFIGURATION FOR ENABLING SNMP TRAP AND SYSLOG MESSAGES
+		*SNMP traps for SLA are supported via CISCO-RTTMON-MIB and CISCO-SYSLOG-MIB
+		*Configure #ip sla logging traps (command to enable syslog messages)
+		*Configure #snmp-server enable traps ipsla
+		*Configure #ip sla enable reaction-alerts (to integrate ip sla reaction-configuration with Event Detector)
+		NOTE!
+			*threshold-type is never is by default.
+			*Action-type is none by default.
+------------------------------------------------------------
+	II.When will it occur?
+		+Notification is not issued for every occurrence of a threshold violation.
+		+Monitored element exceeds the upper threshold an event is sent for the first time.
+		+Subsequent threshold-exceeded notifications are issued only after the monitored value falls below the falling threshold.
+	 _____________________________
+	|What reactions are supported?|
+	|         Diapo 27.           |
+        |_____________________________|
+____________________________________________________________
+VRF------VRF-----VRF-------VRF--------VRF------VRF-----VRF--
+VRF SUPPORT IN SLA OPERATION:
+	*IP SLA performance measurement between 2 different VPNs will be done using VRF table.
+	*Supported on ICMP Echo, ICMP Path Echo, UDP Echo, UDP Jitter, HTTP, FTP, DNS and TCP-Connect operations.
+	*Based on the VRF table the IPSLA will send packet to that destination from PE1 which is part of VPN-A, to PE2 which is part of VPN-B
+	*Use #vrf vrf-name 
+	 __________________________________________________
+	|NOTE!                                             |
+	|	Type of IP SLA Operations Supporting IPv6  |
+	|	*ICMP Echo*UDP Echo*UDP Jitter*TCP Connect |
+	|__________________________________________________|
+
+____________________________________________________________
+DEBUGS (D.38):
+	Common Debug Commands in Sender:
+		#Show ip sla statistics <oper-id>
+		#Show ip sla configuration <oper-id>
+		#Show runn | section ip sla
+		#Debug ip sla trace <oper-id>
+		#Debug ip sla error <oper-id>
+		#Debug ip sla history <oper-id>
+		#Debug ip sla trace 0
+		#Debug ip sla error 0
+		#show ip sla responder
+		#show runn | sec ip sla
+____________________________________________________________
+ICMP Echo
+	+SLA icmp echo is the same as ping
+	+Normally, if ping works then IP SLA icmp echo should work.
+	+One packet sent, reports success and round trip time delay.
+	+For icmp-echo in vrf, consider if vrf ping works.
+	+Adjust the threshold and frequency based on the network.
+	IP SLA ICMP ECHO DEBUGGING(D.44)
+_:__________________________________________________________
+HOW TO DEBUG AUTHENTICATION FAILURE?
+	STEP 1: Verify on stats on the Sender
+	STEP 2:	Verify debug on the Sender
+	STEP 3:	Configure the Key Chain
+	STEP 4:	Again Check on the Sender Statistics
+____________________________________________________________
+UDP ECHO OPERATION
+	*Uses a port
+	*Requires responder for more accurate results:
+		processing delays subtracted on both source and destination.

@@ -1,0 +1,183 @@
+*sla es una herramienta de medicion
+*SE PUEDEN MEDIR 5 METRICAS CON SLA
+	- LATENCY
+	- PACKET LOSS
+	- METWORK JITTER: mide que tan rapido es el SLA, si la red esta lenta o rapida.
+	- HISTORY: Almacena estadisticas respecto al SLA(cada 	  cuanto se ejecuta el pruf)		
+	- CONNECTIVITY: PING, verifica si hay conectividad o no con 	  el destino.
+*OPERACIONES SLA:::::::
+	+HTTP +FTP +TCP +PathEcho +ICMP Echo +UDP Echo +UDP Jitter +Ethernet +RTP +Video +others
+______________________________________________________________
+*dos componentes del SLA: SENDER Y RESPONDER
+	SLA IPSLA ES LO MISMO
+	Sender y responder es lo mismo que source y destination
+----------------------SENDER----------------------------
+		+ REPORTA METRICAS, COMO CONECTIVIDAD NETWORK DELAY
+		+ Aqui el cliente nos define donde va a configurar
+		+ SLA udp-jitter y tcp-connect requieren SLA responder, esto es otro Cisco device, en resumen estas operaciones solo se ejecutan entre Cisco Devices.
+----------------------RESPONDER------------------------
+		+ El sender manda el pruf con la informacion pedida, el destino procesa la informacion y la devuelve al sender el cual guarda esas estadisticas para poder vizualiarlas con comandos historis o estadisticas, utilizadas mas 		  las estadisticas.
+_______________________________________________________________
+FREQUENCY
+FREQUENCY DEFAULT ES DE 60sec
+debe ser menor o igual a 60sec
+Minimo 5sec - Max 60sec
+_______________________________________________________________
+SCHEDULING
+Se puede usar por grupos, random o 1 por 1: se recomienda el 1 por 1
+
+_______________________________________________________________
+REACTION CONFIGURATION
+	*
+
+_______________________________________________________________
+VRF
+	*Se configura dentro del prube del SLA
+	*Si el ping del device con o sin VRF no esta funcionando, el Ip SLA no va a funcionar.
+	
+_______________________________________________________________
+DEBUGS
+1. Debug ip sla trace <oper-id>::::: SENDER ::::: (debug ip sla trace #IDSLA)(debug ip sla error #IDSLA)
+2. Debug ip sla error <oper-id>::::: RESPONDER :::::: (debug ip sla error 0) - (debug ip sla trace 0)
+
+_______________________________________________________________
+ICMP Echo
+ip sla 1 
+  icmp-echo 172.16.17.51
+ip sla schedule 1 life forever start-time now
+ip sla2
+  icmp-echo 20.20.10.2
+  vrf vrf1
+___________________________________________________________________________________
+-----------------------------------------------------------------------------------|
+___________________________________________________________________________________|
+#ip sla ? (TE DICE SI PUEDES CONFIGURAR SLA O NO)
+#show ip int br | inc up (VER LAS INTERFACES)
+!!!!!!!!!!!!!!Verificar si las ip dan ping!!!!!!!!!!!!!
+#ping 10.122.162.32
+----------------------------------------------------------------------------------
+CONFIGURAR PRUBE
+#ip sla 1
+#icmp-echo 192.168.10.10 source-ip 192.168.10.5
+
+(config-ip-sla)#tag ECHO TO PORTCHANNEL NEIGHBOR
+(config-ip-sla-echo)#frequency 5
+(config-ip-sla-echo)#threshold 10
+(config-ip-sla-echo)#timeout 100
+(config-ip-sla-echo)#verify-data
+(config-ip-sla-echo)#request-data-size 100
+(config-ip-sla-echo)#exit
+(config)#do show run | beg ip sla
+ip sla 1
+
+(config)#exit
+#show ip sla statistics 1 (PARA VER ESTADISTICAS)
+#config t
+(config)#ip sla schedule 1 life for start now
+(config)#exit
+#show ip sla application
+#show ip configuration (PARA VER LA CONFIGURACION DEL PRUBE)
+
+#do show ip sla summary (PARA VER ESTADISTICAS)
+ 
+
+#show ip interface brief | inc u
+ 
+(config)#ip sla reset(PARA BORRAR LOS SLA)
+_______________________________________________
+#show logg (VER TODOS LOS QUE SE HAN LOGGEADO) 
+_______________________________________________
+#show vrf
+#config
+#ip sla 50
+#icmp-echo 192.168.10.10 souce
+#$92.168.10.10 source-ip 192.168.10.5
+#request
+#request-data-size 150
+#exit
+#do sh run | beg ip sla
+#ip sla schedule 50 life for start now
+______________________________________________
+CON VRF
+#do show vrf
+#ip sla 30
+#icmp-echo 10.122.162.32
+#vrf Mgmt-intf
+#frequency 30
+#timeout 35
+%error: timeout is less than threshold 5000
+#threshold 20
+#timeout 25
+#exit
+#ip sla schedule 30 life forever start-time now
+#do show ip sla statistics 30 
+_________________________________________________|
+#ip sla 40                                       |
+#icmp-echo 192.168.10.10  source-ip 192.168.10.5 |                     
+#timeout 20                                      |
+!!!!!!!!!!!!!!                                   |
+#threshold 10                                    |
+#timeout 20                                      |
+#frequency 35                                    |
+_________________________________________________|       
+CON VRF                                          |
+#ip sla 60                                       |
+#icmp-echo 10.122.162.32                         |
+#vrf Mgmt-intf                                   |
+#frequency 40                                    |
+#threshold 30                                    |
+#timeout 30                                      |
+#exit                                            |
+#ip sla schedule 60 life forever start-time now  |
+#do show ip sla summary                          |
+#do show ip sla configuration 60                 |
+_________________________________________________|
+#ip sla 13                                       |
+#icmp-echo 192.168.10.10 source-ip 192.168.10.5  |
+#frequency 20                                    |
+#exit                                            |
+#ip sla schedule 13 life forever start-time now  |
+#do show ip sla summary                          | 
+_________________________________________________|
+CON VRF                                          |
+#ip sla 61                                       |
+#icmp-echo 10.122.162.32                         | 
+#vrf Mgmt-intf                                   | 
+#frequency 40                                    |
+#threshold 30					 |
+#timeout 30                                      | 
+#exit                                            |
+#ip sla schedule 61 life forever start-time now  |
+#do show ip sla configuration 61                 |
+_________________________________________________|
+#ip sla 15                                       | 
+#icmp-echo 192.168.10.10 source-ip 192.168.10.5  |
+#frequency 50                                    |
+#threshold 40                                    |
+#timeout 40                                      |
+#request-data-size 150                           |
+#exit                                            |
+#ip sla schedule 15 life forever start-time now  |  
+#do show ip sla configuration 15                 |
+_________________________________________________|
+________
+ |____|
+|TRACK |
+ ------
+	+Sirve para darse cuenta si aun existe conectividad
+	+Se usa para monitoriar si un enlace esta up or down
+#config t
+#tag ECHO TO TEST TRACK
+#show track
+#show track brief(LO MUESTRA DE MANERA MAS RESUMIDA)
+#show log | inc %TRACK
+____________________________________________________________________
+*DELAY ESTA DESDE 0 A 180 SEC
+*EL delay down/up del track se calcula basado en la frecuencia del SLA Probe como: 3 veces la frecuencia mas 1 segundo (3f+1)
+	#delay down 16 up 16
+https://cisco.webex.com/cisco/ldr.php?RCID=92ab04ea8f14b002e861700f8272675e
+Password: JvAPuwq8
+_____________________________________________
+!!!! 7 ES EL NIVEL DEL DEBUG EN IOS!!!!      |
+#undebug all(para apagar el debugging)       |
+_____________________________________________|

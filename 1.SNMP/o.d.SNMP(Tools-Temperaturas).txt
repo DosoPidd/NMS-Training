@@ -1,0 +1,32 @@
+TOOLS:
+https://www.paessler.com/tools/snmptester
+http://www.oidview.com/mibs/9/md-9-1.html
+ftp://ftp.cisco.com/pub/mibs/supportlists/
+https://nm-tac.cisco.com/cli_snmp/
+https://smartdecoder-dev.cisco.com/
+https://www.cisco.com/c/en/us/support/docs/ios-nx-os-software/ios-embedded-event-manager-eem/116142-config-eem-applets-00.html
+***********************************
+IOS
+IOS-XE
+Nexus
+WLC y ASA soportamos solo preguntas relacionadas a MIB/OID support
+FMC / Firepower no vemos nada de SNMP
+no hacermos tshoot de SNMP ni en WLC, ni en ASA
+
+***********************************
+
+ERROR 2008 O 2003 = TIMEOUT!
+___________________________________
+PARA VER ESTADISTICAS DE TEMPERATURAS - ABANICOS
+#show environment all 
+#show environment temperature all
+#show environment temperature
+#show emv power
+___________________________________
+HACER MAPEO DE LOS OID 
+#snmpwalk -v2c -c esterodr 10.82.139.194 1.3.6.1.4.1.9.9.13 (para anidar)
+#snmpwalk -v2c -c esterodr 10.82.139.194 1.3.6.1.4.1.9.9.13 | grep 1013(para segmentar el index)
+
+
+
+

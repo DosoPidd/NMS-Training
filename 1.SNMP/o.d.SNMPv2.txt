@@ -1,0 +1,25 @@
+VER CONFIG DEL USUARIO SNMP
+*VER IP ADDRESS : ipconfig*
+#show run | sec snmp
+#show run | sec snmp-server
+*Comandos de verificacion:
+#show ip sockets
+#show ip int brief | inc "****"
+___________________________________
+Pollingg:::Linux:::Query
+#snmpwalk -v2c -c COL-->(community string) 10.207.172.33-->(ipAddressDelDispositivoQseQuiereVer) 1
+___________________________________
+SETTING
+#snmpset -v2c -c COL 10.207.172.33 1.3.6.1.2.1.1.4.0 s COLOMBIA_TEAM
+	(#snmpget -v2c -c COL 10.207.172.33 1.3.6.1.2.1.1.4.0
+	 #show version)
+____________________________________
+#snmp-server community Cisco RO 11
+#snmp-server view ALLSMP iso included (pollea todo snmp)
+#snmp-server view ALLSMP 1.3.6.1.2.1.1.4 excluded(INCLUYE TODOS MENOS EL ESPECIFICADO)
+______________________________________________________________
+DEBUG!!!!
+#debug snmp packets
+#debug snmp headers
+#term mon (o #logg con 7(en config t))
+

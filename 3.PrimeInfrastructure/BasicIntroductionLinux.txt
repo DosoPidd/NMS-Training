@@ -1,0 +1,177 @@
+LINUX
+::::::::::::::::::::::::INFO:::::::::::::::::::::::::::::
+*SISTEMA OPERATIVO LIBRE
+	Open-source
+	Community support
+*Shell Command Line, Interprete
+________________________________________________________
+ABBREVIATIONS  | d = directory                          |              
+---------------| - = archivo                            |
+_______________|________________________________________|
+##########COMMANDS##############  |
+----------------------------------|
+COMMANDS FOR LIST:
+	#ls -lh :("list with more details")
+	#ls -hal :("list with weigth in kilobytes")
+
+COMMANDS FOR DIRECTORY:
+	---Delet Directory---
+	#rm -r <name directory>
+	---Copy Directory---
+	#cp <name directory>
+
+COMMANDS FOR FILES:
+	#touch("Create Files")
+	---Edit Files---
+	#vi <file name> (+) luego de salirse con esc salvar el archivo con (:wq)para buscar por medio del vi se utiliza el (/) y volver al modo insert con (I) y (:q!)para no guardar los cambios, para guardar cambios se usa(Shift + zz)
+	#nano <file name> (-)
+	#pico <file name> (-)
+	---Move Files---
+	#mv <files name> /<path destination>
+	---Delet files---
+	#rm <file name>
+	---Copy files---
+	#cp <file name>
+	---view content---
+	#cat <file name>
+
+COMMANDS FOR SUPER USERS:
+	#sudo su-("SuperUserMode")
+	#whoami ("To know who I am")
+
+COMMANDS FOR SEARCH: ¡how to use regular expresion (regex) linux pagina web que ayuda con simbolos!
+	#locate ("To search files in database") (-)
+ 	#find ("To search files in memory")  (+)
+		#find <directory name> -name  ("buesqueda case sensitive")
+		#find <directory name> -iname  ("busqueda no case sensitive")
+			#find <directory name> -iname hm-*.log  ("busque archivos  que empiece on "hm-" y termine ".log"")
+
+COMMANDS FOR READING PARTITIONS:
+	#df -h ("muestra el peso de los archivos")
+	#du -h  
+	#du -h /<folder> --max-depth=6 | grep '[0-9](G|M)' | sort -k2
+
+COMMANDS FOR VIEW CONTENT: 	
+	#cat <file name> : ("comando para ver la memoria")
+	#cat /proc/version : ("comando para ver la version del SO")
+	#free -h: ("comando para ver la memoria")
+	#tail ("ultimas 10 lineas del archivo pero si quieres visualizar mas se pone #tail -100(numero de lineas)")	
+	#tail -f ("para ver logg en tiempo real")
+		LOG IMPORTANTES EN LOGG		
+	#less("para visualizar el archivo del log") (/)-->para busqueda, (n) minuscula para ver el siguiente, (N) para ver el previo
+	#head ("muestra las primeras 10 lineas del archivo pero si quieres visualizar mas se pone #head -100(numero de lineas))
+
+COMMANDS FOR MONITOR PROCESSES:	
+	#top : ("comando del uso del cpu parecido administrador de tareas")
+	#ps aux >>
+
+COMMANDS FOR VIEW BIOS INFO:
+	#dmidecode | less
+
+COMMANDS FOR CREAT USERS:
+	Basic:
+		#useradd [options] username
+	Sudo Mode:
+		#sudo useradd AllanG
+	Sudo Mode and Password:
+		#sudo useradd -m ALLANG -p PASSWORD
+
+COMMANDS FOR CREAT GROUPS:
+	#sudo groupadd <group name>
+	#sudo groupadd <group name>
+	#sudo passwd <password>
+	#sudo usermod -a -G <group name><user name>
+______________________________________________________________________ 
+
+ACCESS PERMISSIONS: ¡Owner(u) Group(g) Other(o)!
+	DAR PERMISOS CON NUMEROS:
+		1= enabled
+		0= disabled
+			rwx|
+			421|
+	#chmod 664 <filename>
+		MOST POPULAR = rwx rwx -wx = 773
+
+	COMMADS TO PERMISSIONS:
+		#chmod 664 <filename>
+		---Permissions with letters---
+		#chmod +rwx :("filename to add PERMISSIONS")
+		#chmod -rwx :("directoryname to remove PERMISSIONS.")
+		#chmod +x :("filename to allow executable PERMISSIONS.")
+		#chmod -wx :("filename to take out write and executable PERMISSIONS.")
+
+	COMMANDS TO CHANGE OWNER:
+		#chown <user> <filename> ("cambiar el owner de un archivo")
+		#chown admin /localdisk/defaultRepo/discovery.pcap
+		#chgrp root /localdisk/defaultRepo/discovery.pcap (cambiar el grupo de un archivo)
+		#chown prime:gadmin /localdisk/defaultRepo/discovery.pcap (cambiar el nombre del owner y el grupo)
+_______________________________________________________________________________
+ARCHIVING FILES AND DIRECTORIES
+COMPRESS FILES:
+	#tar -cvf <nombre>
+_______________________________________________________________________________
+
+_____________________________________________________________
+¡IMPORTANTEEE!
+	> sobreescribe #> 
+	>> agrega      #>>
+
+	#df -h (Mostrar informacion)
+	#df -h > /opt/Bogota/Redirect.txt :("el contenido del archivo se paso al otro archivo")
+	#df -h >> /opt/Bogota :("el contenido se agrego al otro archivo")
+
+		3.8gb el bar max.
+
+____________________________________________________________
+TRANFER PROTOCOLS:
+TRANFERENCIA DE ARCHIVOS POR FTP SIEMPRE VIENEN A LA MISMA LOCATION: /localdisk/ftp
+SCP= PORT 22
+
+COMMANDS FOR FILE TRANSFER FROM A SERVER TO ANOTHER SERVER:
+	#scp VMware-viclient-all-5.5.0-4032365.exe scpuser@10.225.137.149://localdisk/defaultRepo/
+scpuser@10.225.137.149's password:
+VMware-viclient-all-5.5.0-4032365.exe                                                                                  8%   29MB   2.3MB/s   02:24 ETA
+-----------------------------
+SFTP= PORT 22
+-----------------------------
+FTP= PORT 
+	#ftp 10.255.137.150
+	Comandos FTP
+		bin(evita que la tranferencia tenga fallos o llegue corrupto al otro servidor.
+		hash(muestra en tiempo real el proceso)
+		put [file name]
+		get [file name]
+		quit(para salirse)
+SCP
+	#getSCP ("Para ver el usuario y contraseña del arhivo")
+	#scp
+
+PARA LAS CREDENCIALES DE SCP EN PRIME:
+	#/opt/CSCOlumos/bin/getSCPCredentials.sh
+	user is scpuser
+	password is wenaWTKj5Ttg2hIQ
+		PARA JALAR EL ARCHIVO EN REMOTO A NUESTRO LADO:
+			scp scpuser@10.225.137.148://opt/CSCOlumos\file.txt
+			C:\users\username\Downloads
+
+Por programa se utiliza FileZillaServer o WinScp
+PARA CORRER EL CHECKSUM:
+	#md5sum [file name]
+#certutil -hashfile NeighApRssi.html MD5
+!!Hay que revisar el MD5 Antes de sacar el backup, despues de sacar el backup!!
+
+____________________________________________________________
+#ifconfig(configuracion de la interfaz en el server)
+
+____________________________________________________________
+/localdisk (repositorio donde se guardan los backup)
+
+echo
+______________________________________________________________	
+/////////////////////////////ayudas///////////////////////////
+
+help
+info
+man
+#history ("Command to view command history list")
+history: comando para ver lista de comandos usados

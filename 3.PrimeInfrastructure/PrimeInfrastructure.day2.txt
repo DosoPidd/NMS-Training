@@ -1,0 +1,51 @@
+Network managment: Monitoring
+*Monitor
+*Configure
+*Fault Detection
+*Bacukp Configurations
+*Software image managment*Performance
+-----------------------------------
+PRIME INFRASTRUCTURE
+-Wired and Wireless network managment
+Assurance: 
+	*Visibility into application and voice traffic
+	*Reduced MTTR
+	*Proactive monitoring and resolution of network issues
+Lifecycle Managment:
+	*One managment for all wired and wireless devices
+	*Day 1 device support
+	*Single pane of glass view into the entire network
+
+COMMUNICATES WITH NETWEORK DEVICES USING DIFFRENT PROTOCOLS LIKE SNMP, TELNET/SSH FOR CLI ACCESS.
+
+_________________________________________________________________
+VIRTUAL MACHINE: ES OVA FILE
+PSYSICAL SERVER INSTALLATION: ISO FILE 
+	2 Types of physical servers available:
+		*Gen1 appliance (PRIME-NCS-APL-K9) (-)
+		*Gen2 appliance (PI-UCS-APL-K9) (+)
+
+PRIME INFRASTRUCTURE VERSION 3.5 HACIA ATRAS ESTAN UNSUPPORTED
+ORACLE DATABASE!
+
+VIRTUAL MACHINE INSTALLATION ESXi(PROBLEMAS DE VIRTUAL MACHINE NO SOLUCIONAMOS, ESXi tampoco):
+	1.Connect to ESX server via vSphere client
+	2.Deply OVA template file and select desired size.
+	3.Run initial setup (IP Connectivity)
+	4.Complete Prime Infrastructure setup
+VMware
+
+PRIME INFRASTRUCTURE V.3.7: https://www.cisco.com/c/en/us/td/docs/net_mgmt/prime/infrastructure/3-7/quickstart/guide/bk_Cisco_Prime_Infrastructure_3_7_0_Quick_Start_Guide.html
+	| *No todos te dejan hacer BackUp
+	|
+	|
+	|
+	|
+	|
+PHYSICAL SERVER INSTALLATION - GEN 2
+INICIAL SETUP ES IGUAL
+CONNECTO TO CIMC(F8 DURING BOOTUP)AND SETUP IP CONNECTIVITY
+
+ELEGIR Cisco CIMC-Mapped vDVD1.22
+_________________________________________________________________
+RAID: Discos Independientes, funcionan como uno solo para opciones determinadas.

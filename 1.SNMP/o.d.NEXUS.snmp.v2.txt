@@ -1,0 +1,102 @@
+NEXUS 9000
+Role-Nexus(Nexus entiende solo de rol:
+	Role: Network Admin(read-write)"vdc-admin:para swicth 	interno" 
+	Role: Network Operator(read))"vdc-operator:para swicth 	interno"
+****************
+#show role
+****************
+----------------------
+CONFIGURAR EL NEXUS
+	NEXUS NECESITA vrf(es una configuracion especial)para ping
+****************
+#ip access-list CO-SNMP
+#remark SNMP Polling from Prime Infrastructure
+#permit ip host 10.201.137.225 any----->(any)¡PUEDE POLLIAR LO QUE SEA!
+#ping 10.201.137.225 vrf managment
+****************
+---------------------
+****************
+Asignacion de access list: #snmp-server community Colombia use-ipv4acl CO-SNMP-------->"(CO-SNMP) Access list"
+****************
+--------------------
+****************
+MIBS QUE ESTAN DISPONIBLES EN EL NEXUS CON ESTE COMANDO:
+NEXUS:#show snmp internal loaded mibs
+****************
+VERIFICAR UN POLLING: #snmpwalk -v2c -c CostaRica 10.82.141.214 system
+****************
+COMANDO PARA TROBLESHOT EN NEXUS: (#show snmp internal)
+|||||||||||||||||||||||||||||||
+NEXUS LOS TRAPS SE ESCONDEN Y LOS POLLS SE MUESTRAN
+****************
+#snmp-server enable traps syslog----> "NAME" (Deshabilitar Traps: #no snmp-server enable traps syslog----> "NAME"
+#show snmp trap
+#show run | inc snmp (para ver las traps enable)
+#snmp-server host 10.201.137.225 traps Colombia
+#snmp-server host 10.201.137.225 use-vrf managment
+****************
+|||||||||||||||||||||||||||||||
+
+ASIGNACION DE ROLES
+*******************
+Nombrar rol y entrar en su config: #role name CORW
+Descripcion de rol: #description Only for System MIB except system.8 and system.9
+Configurar las reglas del rol:#rule 1 permit read-write oid 1.3.6..1.2.1.1
+Para denegar permiso a oid especificos:#rule 2 deny read oid 1.3.6..1.2.1.1.8	
+				      :#rule 3 deny read oid 1.3.6..1.2.1.1.9
+
+VER LAS REGLAS: #show rules name CORW
+-----------------------------------------------------------------
+COMO APLICAR EL ROL
+********************
+para ver  los snmp habilitados: #show snmp community
+APLICAR EL ROL CREADO (CORW):#snmp-server community Colombia group CORW
+
+*********************
+Creacion de role:
+#role name CRRO
+#description Permit certain system OID and also CPU Information
+	#rule 1 permit read oid 1.3.6.1.2.1.1.1
+	#rule 2 permit read oid 1.3.6.1.2.1.1.2
+	#rule 3 permit read oid 1.3.6.1.2.1.1.3
+	#rule 4 deny read oid 1.3.6.1.2.1.1.4
+	#rule 5 deny read oid 1.3.6.1.2.1.1.5
+	#rule 6 deny read oid 1.3.6.1.2.1.1.6
+	#rule 7 deny read oid 1.3.6.1.2.1.1.7
+	#rule 8 deny read oid 1.3.6.1.2.1.1.8
+	#rule 9 deny read oid 1.3.6.1.2.1.1.9
+	#rule 10 deny read oid 1.3.6.1.4.1.9.9.109.1.1.1.1
+aplicacion del role al snmp: #snmp-server community CostaRica group CRRO
+-----------------------
+CAPTURA DE PAQUETES CON EL ETHANALYZER:
+#ethanalyzer local interface mgmt display-filter "ip.addr==10.201.237.225" limit-captured-frames 100 
+#ethanalyzer local interface mgmt capture-filter "udp port 161" limit-captured-frames 100 
+
+--------------------------------------
+PARA VER LAS ESTADISTICAS
+#show snmp nms-stadistics
+--------------------------------------
+#show run | inc snmp
+#show run | inc snmp-server
+_______________________________________
+save: #copy run start
+
+#undebug all
+---------------------------
+para ver problemas en general
+#show system internal sysmgr service name snmpd
+#show system internal mts buff summary ----------->(mas importante para revisar es el sapno)
+	#show system internal mts sup sap 284 description
+	#show system internal mts sup sap 5003 desc
+VER ESTADISTICAS DE CPU
+#show proccess cpu detailed 4207(para ver ese pid correcto: #show system internal sysmgr service name snmpd)
+____________________________________________
+COMO ENCENDER Y APAGAR
+#no snmp-server protocol enable
+#snmp-server protocol enable
+____________________________________________
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Si en un nexus un proceso tiene un valor muy alto, tipo 90 100 1004 en el udp socket seria un problema a nivel de udp, afectaria a snmp 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+_______________________
+LINKS: https://community.cisco.com/t5/networking-knowledge-base/using-ethanalyzer-on-nexus-platform-for-control-plane-and-data/ta-p/3142665

@@ -1,0 +1,28 @@
+#config t
+#do show run | inc snmp
+#snmp-server view JRDJ system included
+#snmp-server view JRDJ system.8 excluded
+#snmp-server view JRDK 1.3.6.1.2.1.2.2.1.2 included
+_______________________________________________________
+GRUPO 2
+crear un view que permita:
+system.1
+ifnumber.1
+cpmCPUTotalPhysicalIndex
+1.3.6.1.4.1.9.9.109.1.1.2.1.2
+1.3.6.1.2.1.47.1.1.1.1.2
+Al polear con SNMPv2c y v3 solo estos OIDs deben responder.
+Cualquier otro OID o MIB deberia no responder.
+Con SNMPv2c y SNMPv3 el polling debe funcionar.
+----------------------------------------------------------
+#accsess-list 12 permit host (ip) log
+#snmp-server view team2 system.1 included
+#view team2 1.3.6.1.4.1.9.9.109.1.1.2.1.2 included
+#
+
+#user David grupo2 v3 auth md5 1235! priv aes 128 1235!
+#do show snmp | inc int
+#do show snmp | inc snmp-server
+
+____________________________
+#snmp-server user DAVID grupo2 v3 auth sha Colombia123! priv aes 128 Colombia123!

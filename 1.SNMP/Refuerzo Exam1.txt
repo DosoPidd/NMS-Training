@@ -1,0 +1,4 @@
+SOLO SIRVE PARA NEXUS 300 Y NEXUS 9000 = FEATURE
+22= Los nexus solo tienen dos grupos, network operator y network main
+
+#snmp-server protocol enable (PARA ACTIVAR PUERTO 161 EN NEXUS)
