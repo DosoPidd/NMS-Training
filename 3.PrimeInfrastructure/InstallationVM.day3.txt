@@ -15,7 +15,7 @@ APPLIANCE SE MANEJA DESDE EL CIMC
 ANTES DE INTENTAR EL UPGRADE EN UN REMOTE SERVER!:
 	#df -h ("para ver si las particiones tienen el espacio requerido")
 	#ncs status ("para ver los servicios que estan en running")
-		No debe estar en primary active el health monitor server("debe estar en HA not configured")
+		No debe estar en primary active el health monitor server("debe estar en HA not configured, si esta encendido se remueve con: #ncs ha remove")
 	#ncs stop ("para detener los servicios")
 	#ncs start ("para iniciarlos")
 	#application upgrade-3.0.X_to_3.1.0.0.xxx.tar.gz defaultRepo
@@ -46,12 +46,19 @@ Proccess: Snapshot - https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vs
 https://www.cisco.com/c/en/us/support/cloud-systems-management/prime-infrastructure/products-device-support-tables-list.html
 ___________________________________________________________________
 BACKUP TYPES
--(APP)Application Backups: Cuando vas a cambiar de version de PI
-	#backup <backup-name> repository <repo-name> application NCS
--(SYS)Appliance Backups: Cuando se hace un backup en la misma version
-	#backup <backup-name> repository <repo-name>
-*BACKUP SCHEDULING: 
+-(APP)Application Backups:*Contain the PI application data from the database.
+			*These do not contain host-specific settings, such as server hostname, IP address, etc.
+			*Application backups can be taken anytime from CLI or by running the Server Backup Job in the WebUI.
+	 Cuando vas a cambiar de version de PI
+		#backup <backup-name> repository <repo-name> application NCS
 
+-(SYS)Appliance Backups:*Contain the PI application data from the database the host-specific data.
+			*Appliance backups can only be taken from the CLI.
+	Cuando se hace un backup en la misma version
+		#backup <backup-name> repository <repo-name>
+
+*BACKUP SCHEDULING: 
+	---Siempre recordar la contraseña del Backup!
 TREE TYPES OF REPOSITORY: FTP, SFTP, NFS
 *REMOTE REPOSITORIES:
 *CONFIGURING FTP REPOSITORIES: Adding an FTP Repository
@@ -102,6 +109,24 @@ Possible Fix:
 	Linux: md5sum<file_name>
 	Windows:cerUtil -hashfile C:\<file_name> MD5
 ___________________________________________________________________
+Startup
+HEALTH MONITOR: 
+/opt/CSCOlumos/bin/wcsadmin.sh status [-v("verbose,para agregar mas detalles")] ("para ver el estatus")
+/opt/CSCOlumos/bin/wcsadmin.sh stop
+Logs: /opt/CSCOlumos/logs/hm-x-0.log
+      /opt/CSOlumos/logs/hmEvents.log
+		#ls -lh /opt/CSOlumos/logs/hm-?^.log
+
+FTP siempre se guarda en localdisk/ftp/
+	user reset: ncs password ftpuser ftp-user password <>
+TFTP SERVER:
+PORT UDP: 69
+USED FOR WLC BACKUPS
+
+PLUG & PLAY STARTUP ISSUES
+___________________________________________________________________
 	Cisco Prime Infrastructure 3.7 Appliance:https://www.cisco.com/c/en/us/td/docs/net_mgmt/prime/infrastructure/3-7/quickstart/guide/bk_Cisco_Prime_Infrastructure_3_7_0_Quick_Start_Guide.html
 
 https://www.cisco.com/c/en/us/td/docs/net_mgmt/prime/infrastructure/3-7/admin/guide/bk_CiscoPrimeInfrastructure_3_7_AdminGuide/bk_CiscoPrimeInfrastructure_3_7_AdminGuide_chapter_010.html
+
+TROUBLESHOOTING TNS: https://techzone.cisco.com/t5/Cisco-Prime-Infrastructure/Prime-Infrastructure-PI-service-database-won-t-start-due-to-an/ta-p/676919
