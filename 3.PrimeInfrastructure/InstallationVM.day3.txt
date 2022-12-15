@@ -65,8 +65,8 @@ TREE TYPES OF REPOSITORY: FTP, SFTP, NFS
 				1.Open a CLI session
 				2.Enter Configuration Mode
 					#configure terminal
-				3.#repository labtest
-				  #url ftp://10.225.137.150/
+				3.#repository <repository name>
+				  #url ftp://<RemoteServerIp>
 				  #user admin password plain Labtest$
 				  #end
 				4.Add an NFSStaging directory
@@ -109,13 +109,6 @@ Possible Fix:
 	Linux: md5sum<file_name>
 	Windows:cerUtil -hashfile C:\<file_name> MD5
 ___________________________________________________________________
-Startup
-HEALTH MONITOR: 
-/opt/CSCOlumos/bin/wcsadmin.sh status [-v("verbose,para agregar mas detalles")] ("para ver el estatus")
-/opt/CSCOlumos/bin/wcsadmin.sh stop
-Logs: /opt/CSCOlumos/logs/hm-x-0.log
-      /opt/CSOlumos/logs/hmEvents.log
-		#ls -lh /opt/CSOlumos/logs/hm-?^.log
 
 FTP siempre se guarda en localdisk/ftp/
 	user reset: ncs password ftpuser ftp-user password <>
